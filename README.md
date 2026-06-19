@@ -2,7 +2,7 @@
 
 一只勇敢的西高地白梗，在「万象天地」露天现代街区一路狂奔、跳跃、收集商品的横版跑酷小游戏。皮克斯 3D 风格美术，WebGL 特效，手机/电脑全平台全屏自适应，点开即玩。
 
-> 🎮 **在线试玩**：_（部署 GitHub Pages 后填入链接）_
+> 🎮 **在线试玩**：https://wxshunbang-ui.github.io/westie-mixc-run/
 
 ![游戏截图](screenshots/gameplay.png)
 
