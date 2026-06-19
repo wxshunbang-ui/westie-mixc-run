@@ -1,0 +1,169 @@
+/* ============ 西高地勇闯万象城 · 样式 ============ */
+:root{
+  --gold:#ffb347; --gold-deep:#ff8c42; --pink:#ff9ec7; --cream:#fff6e9;
+  --ink:#4a3527; --ink-soft:#7a6555;
+  --sky:#aee3ff;
+  --card:rgba(255,250,242,.92);
+  --shadow:0 12px 40px rgba(120,80,40,.28);
+  --radius:26px;
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-l:env(safe-area-inset-left,0px);
+  --safe-r:env(safe-area-inset-right,0px);
+  --font:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Heiti SC",-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#1a2433;}
+body{
+  font-family:var(--font); color:var(--ink);
+  /* 动态视口高度：自动适配 iOS 地址栏伸缩 */
+  height:100vh; height:100dvh;
+  position:fixed; inset:0;
+  touch-action:none; user-select:none; -webkit-user-select:none;
+  overscroll-behavior:none;
+}
+
+/* Phaser 画布铺满 */
+#game-root{position:absolute; inset:0; z-index:1;}
+#game-root canvas{display:block; width:100% !important; height:100% !important;}
+
+/* UI 层 */
+#ui{position:absolute; inset:0; z-index:10; pointer-events:none;}
+#ui .screen, #ui .hud, #ui .combo-pop, #ui .toast{pointer-events:none;}
+#ui .screen.active, #ui .screen.overlay.active{pointer-events:auto;}
+#ui button{pointer-events:auto;}
+
+/* ====== 屏幕容器 ====== */
+.screen{
+  position:absolute; inset:0;
+  display:none; align-items:center; justify-content:center;
+  padding:calc(16px + var(--safe-t)) calc(16px + var(--safe-r)) calc(16px + var(--safe-b)) calc(16px + var(--safe-l));
+  opacity:0; transition:opacity .35s ease;
+}
+.screen.active{display:flex; opacity:1;}
+.screen.overlay{background:rgba(40,28,20,.55); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);}
+.screen.overlay.active{display:flex;}
+
+/* 加载页 */
+#screen-loading{background:linear-gradient(160deg,#ffe9c7,#ffd1e3 60%,#cdecff);}
+.loading-box{text-align:center; width:min(86vw,420px);}
+.paw-spinner{font-size:64px; animation:bob 1s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-8deg);}50%{transform:translateY(-14px) rotate(8deg);}}
+.progress{margin:22px auto 10px; width:100%; height:16px; background:rgba(255,255,255,.6); border-radius:99px; overflow:hidden; box-shadow:inset 0 2px 6px rgba(150,100,60,.25);}
+.progress-fill{height:100%; width:0%; border-radius:99px; background:linear-gradient(90deg,var(--gold),var(--pink)); transition:width .25s ease;}
+.loading-tip{color:var(--ink-soft); font-size:15px; margin:6px 0 0;}
+
+/* ====== 游戏 LOGO 标题 ====== */
+.game-logo{
+  font-weight:900; letter-spacing:1px; line-height:1.1; margin:.2em 0;
+  font-size:clamp(28px,7vw,52px);
+  background:linear-gradient(180deg,#fff3c4 0%,#ffb347 55%,#ff7a59 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  -webkit-text-stroke:2px #fff;
+  filter:drop-shadow(0 4px 0 rgba(180,90,30,.55)) drop-shadow(0 8px 14px rgba(120,60,20,.4));
+}
+.game-logo.small{font-size:clamp(22px,5vw,30px); -webkit-text-stroke:1.5px #fff;}
+
+/* ====== 卡片 ====== */
+.menu-card,.info-card,.over-card{
+  width:min(92vw,460px); background:var(--card); border-radius:var(--radius);
+  box-shadow:var(--shadow); padding:26px 24px calc(24px + var(--safe-b));
+  text-align:center; border:3px solid #fff;
+  max-height:calc(100dvh - 24px); overflow:auto;
+  animation:pop .4s cubic-bezier(.2,1.4,.4,1) both;
+}
+@keyframes pop{from{transform:scale(.8) translateY(20px); opacity:0;}to{transform:scale(1) translateY(0); opacity:1;}}
+
+/* 主菜单主视觉 */
+.hero-frame{position:relative; width:min(64vw,240px); margin:0 auto 6px; aspect-ratio:4/5;}
+.hero-frame img{width:100%; height:100%; object-fit:cover; border-radius:22px; box-shadow:0 10px 26px rgba(150,90,40,.35); border:3px solid #fff;}
+.hero-glow{position:absolute; inset:-12px; border-radius:30px; background:radial-gradient(circle,rgba(255,200,120,.55),transparent 70%); z-index:-1; animation:glow 3s ease-in-out infinite;}
+@keyframes glow{0%,100%{transform:scale(1); opacity:.7;}50%{transform:scale(1.08); opacity:1;}}
+.subtitle{color:var(--ink-soft); font-size:15px; margin:.2em 0 1.1em;}
+.best-line{margin:14px 0 4px; font-weight:700; color:var(--ink-soft);}
+.best-line span{color:var(--gold-deep);}
+
+/* ====== 按钮 ====== */
+.btn{
+  font-family:var(--font); font-weight:800; cursor:pointer;
+  border:none; border-radius:18px; padding:14px 20px; font-size:17px;
+  transition:transform .12s ease, box-shadow .12s ease, filter .12s ease; color:#fff;
+  margin:6px 4px;
+}
+.btn:active{transform:translateY(3px) scale(.98);}
+.btn.big{width:100%; font-size:20px; padding:17px; margin:8px 0;}
+.btn-primary{background:linear-gradient(180deg,#ffc15e,#ff8a3d); box-shadow:0 6px 0 #d96a1f, 0 10px 18px rgba(200,100,30,.4);}
+.btn-primary:active{box-shadow:0 3px 0 #d96a1f, 0 5px 10px rgba(200,100,30,.4);}
+.btn-secondary{background:linear-gradient(180deg,#7ec8ff,#479cf0); box-shadow:0 6px 0 #2b6fc0, 0 10px 18px rgba(40,110,200,.35);}
+.btn-secondary:active{box-shadow:0 3px 0 #2b6fc0;}
+.btn-ghost{background:rgba(255,255,255,.75); color:var(--ink-soft); box-shadow:0 3px 0 rgba(180,140,100,.4); font-size:15px; padding:11px 14px;}
+.menu-actions{display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:14px;}
+.over-actions{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:6px;}
+
+/* 玩法说明 */
+.howto-list{text-align:left; line-height:1.9; color:var(--ink); font-size:15.5px; margin:10px 2px 18px; padding-left:4px; list-style:none;}
+.howto-list li{margin:4px 0;}
+.howto-list b{color:var(--gold-deep);}
+
+/* ====== HUD ====== */
+.hud{
+  position:absolute; top:0; left:0; right:0; z-index:12;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:calc(10px + var(--safe-t)) calc(14px + var(--safe-r)) 10px calc(14px + var(--safe-l));
+  transition:opacity .3s ease;
+}
+.hud.hidden{opacity:0; pointer-events:none;}
+.hud-left{display:flex; gap:8px;}
+.hud-score,.hud-coins{
+  background:rgba(255,250,242,.9); border:2px solid #fff; border-radius:16px;
+  padding:7px 13px; font-weight:900; font-size:17px; color:var(--ink);
+  box-shadow:0 4px 12px rgba(120,80,40,.25); min-width:64px; text-align:center;
+}
+.hud-coins{color:var(--gold-deep);}
+.hud-hearts{display:flex; gap:3px; font-size:24px; filter:drop-shadow(0 3px 4px rgba(120,40,40,.35));}
+.hud-right{display:flex; gap:8px;}
+.icon-btn{
+  pointer-events:auto; width:44px; height:44px; border-radius:14px; border:2px solid #fff;
+  background:rgba(255,250,242,.9); font-size:20px; cursor:pointer;
+  box-shadow:0 4px 12px rgba(120,80,40,.25); display:flex; align-items:center; justify-content:center;
+}
+.icon-btn:active{transform:scale(.92);}
+
+/* 连击飘字 */
+.combo-pop{
+  position:absolute; top:32%; left:50%; transform:translateX(-50%);
+  z-index:13; font-weight:900; font-size:clamp(26px,8vw,48px);
+  color:#fff; -webkit-text-stroke:2px var(--gold-deep);
+  text-shadow:0 4px 10px rgba(200,100,30,.5); opacity:0;
+}
+.combo-pop.show{animation:comboPop .8s ease-out;}
+@keyframes comboPop{0%{opacity:0; transform:translateX(-50%) scale(.4) translateY(20px);}30%{opacity:1; transform:translateX(-50%) scale(1.15) translateY(-10px);}100%{opacity:0; transform:translateX(-50%) scale(1) translateY(-60px);}}
+
+/* ====== 结算页 ====== */
+.score-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0;}
+.score-cell{background:rgba(255,235,205,.7); border-radius:16px; padding:12px 8px; border:2px solid #fff;}
+.score-label{display:block; font-size:13px; color:var(--ink-soft); margin-bottom:4px;}
+.score-val{display:block; font-size:26px; font-weight:900; color:var(--ink);}
+.score-val.gold{color:var(--gold-deep);}
+.new-best{font-weight:900; color:var(--gold-deep); font-size:20px; margin:6px 0 12px; animation:shake .6s ease;}
+@keyframes shake{0%,100%{transform:rotate(0);}25%{transform:rotate(-4deg) scale(1.05);}75%{transform:rotate(4deg) scale(1.05);}}
+
+/* Toast */
+.toast{
+  position:absolute; left:50%; bottom:calc(40px + var(--safe-b)); transform:translateX(-50%) translateY(20px);
+  z-index:20; background:rgba(40,28,20,.92); color:#fff; padding:12px 20px; border-radius:14px;
+  font-size:15px; font-weight:600; opacity:0; transition:all .3s ease; max-width:80vw; text-align:center;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+.hidden{display:none !important;}
+
+/* 横屏（电脑/手机横放）：菜单卡片横向排布更舒展 */
+@media (orientation:landscape) and (max-height:560px){
+  .menu-card{display:grid; grid-template-columns:auto 1fr; gap:6px 22px; width:min(94vw,760px); align-items:center; text-align:left; padding:20px 26px;}
+  .hero-frame{grid-row:1/99; width:min(34vh,180px); margin:0;}
+  .game-logo{font-size:clamp(26px,5vh,40px);}
+  .btn.big{margin:6px 0;}
+  .subtitle{margin:.2em 0 .6em;}
+}

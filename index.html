@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>西高地勇闯万象城</title>
+<meta name="description" content="一只勇敢的西高地白梗，在万象天地开放街区一路狂奔、跳跃、收集商品的横版跑酷游戏。" />
+<meta name="theme-color" content="#ffd9a0" />
+
+<!-- PWA / iOS 全屏（添加到主屏幕后以独立窗口运行，无地址栏） -->
+<link rel="manifest" href="manifest.webmanifest" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="勇闯万象城" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+
+<!-- Open Graph：分享给朋友时的预览卡片 -->
+<meta property="og:title" content="西高地勇闯万象城" />
+<meta property="og:description" content="帮西高地小狗冲过万象天地，收集商品冲击高分！点开即玩。" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="assets/title_hero.webp" />
+
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Phaser 画布挂载点（铺满全屏） -->
+  <div id="game-root"></div>
+
+  <!-- ============ UI 层（DOM，叠在画布之上） ============ -->
+  <div id="ui">
+
+    <!-- 加载页 -->
+    <section id="screen-loading" class="screen active">
+      <div class="loading-box">
+        <div class="paw-spinner">🐾</div>
+        <h1 class="game-logo small">西高地勇闯万象城</h1>
+        <div class="progress"><div id="progress-bar" class="progress-fill"></div></div>
+        <p id="loading-tip" class="loading-tip">正在唤醒小西高地…</p>
+      </div>
+    </section>
+
+    <!-- 主菜单 -->
+    <section id="screen-menu" class="screen">
+      <div class="menu-card">
+        <div class="hero-frame">
+          <img id="hero-img" alt="西高地" />
+          <div class="hero-glow"></div>
+        </div>
+        <h1 class="game-logo">西高地勇闯万象城</h1>
+        <p class="subtitle">点按跳跃 · 二段跳 · 收集商品冲高分</p>
+        <button id="btn-play" class="btn btn-primary big">▶ 开始游戏</button>
+        <div class="best-line">🏆 最高分 <span id="menu-best">0</span></div>
+        <div class="menu-actions">
+          <button id="btn-howto" class="btn btn-ghost">🎮 玩法</button>
+          <button id="btn-mute" class="btn btn-ghost" aria-label="声音">🔊</button>
+          <button id="btn-fullscreen" class="btn btn-ghost" aria-label="全屏">⛶</button>
+          <button id="btn-share-menu" class="btn btn-ghost">🔗 分享</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 玩法说明 -->
+    <section id="screen-howto" class="screen overlay">
+      <div class="info-card">
+        <h2>怎么玩 🐕</h2>
+        <ul class="howto-list">
+          <li><b>跳跃</b>：点屏幕 / 按空格 / 点鼠标</li>
+          <li><b>二段跳</b>：跳起后再点一次，可跳更高</li>
+          <li><b>长按</b>跳得更高，短按跳得低</li>
+          <li>🦴 收集 <b>商品</b> 加分，连续收集有 <b>连击倍数</b></li>
+          <li>🪙 收集 <b>金币</b> 攒积分</li>
+          <li>🛒 撞到 <b>购物车 / 警示牌 / 礼盒</b> 会掉一颗 ❤️</li>
+          <li>跑得越远越快，三颗 ❤️ 掉光就结束</li>
+        </ul>
+        <button class="btn btn-primary close-howto">明白啦</button>
+      </div>
+    </section>
+
+    <!-- 游戏内 HUD -->
+    <div id="hud" class="hud hidden">
+      <div class="hud-left">
+        <div class="hud-score">🛍️ <span id="hud-score">0</span></div>
+        <div class="hud-coins">🪙 <span id="hud-coins">0</span></div>
+      </div>
+      <div class="hud-center">
+        <div id="hud-hearts" class="hud-hearts"></div>
+      </div>
+      <div class="hud-right">
+        <button id="btn-mute-game" class="icon-btn" aria-label="声音">🔊</button>
+        <button id="btn-pause" class="icon-btn" aria-label="暂停">⏸</button>
+      </div>
+    </div>
+
+    <!-- 连击飘字 -->
+    <div id="combo-pop" class="combo-pop"></div>
+
+    <!-- 暂停 -->
+    <section id="screen-pause" class="screen overlay">
+      <div class="info-card">
+        <h2>已暂停</h2>
+        <button id="btn-resume" class="btn btn-primary big">▶ 继续</button>
+        <button id="btn-restart-pause" class="btn btn-ghost">↻ 重新开始</button>
+        <button id="btn-menu-pause" class="btn btn-ghost">🏠 回主菜单</button>
+      </div>
+    </section>
+
+    <!-- 结算页 -->
+    <section id="screen-over" class="screen overlay">
+      <div class="over-card">
+        <h2 id="over-title">这趟逛得不错！</h2>
+        <div class="score-grid">
+          <div class="score-cell"><span class="score-label">本局得分</span><span id="over-score" class="score-val">0</span></div>
+          <div class="score-cell"><span class="score-label">最高分</span><span id="over-best" class="score-val gold">0</span></div>
+          <div class="score-cell"><span class="score-label">金币</span><span id="over-coins" class="score-val">🪙 0</span></div>
+          <div class="score-cell"><span class="score-label">距离</span><span id="over-dist" class="score-val">0m</span></div>
+        </div>
+        <div id="new-best-badge" class="new-best hidden">🎉 新纪录！</div>
+        <button id="btn-replay" class="btn btn-primary big">↻ 再来一局</button>
+        <div class="over-actions">
+          <button id="btn-share-over" class="btn btn-secondary">🔗 分享给朋友</button>
+          <button id="btn-menu-over" class="btn btn-ghost">🏠 主菜单</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 提示气泡（复制成功 / iOS 全屏说明等） -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <!-- 引擎 + 游戏脚本（顺序加载） -->
+  <script src="lib/phaser.min.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

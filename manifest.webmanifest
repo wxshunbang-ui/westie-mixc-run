@@ -1,0 +1,17 @@
+{
+  "name": "西高地勇闯万象城",
+  "short_name": "勇闯万象城",
+  "description": "一只勇敢的西高地白梗，在万象天地开放街区一路狂奔、跳跃、收集商品的横版跑酷游戏。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffe9c7",
+  "theme_color": "#ffd9a0",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

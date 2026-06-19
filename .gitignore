@@ -1,0 +1,11 @@
+# 测试产物
+_test/
+.playwright-mcp/
+.DS_Store
+
+# gpt-image 生成的源 PNG（体积大；游戏只用 webp。需要时用 gen.sh 重新生成）
+assets/*.png
+# 保留 PWA 需要的图标 PNG
+!assets/icon-192.png
+!assets/icon-512.png
+!assets/apple-touch-icon.png
